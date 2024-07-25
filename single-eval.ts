@@ -19,7 +19,7 @@ async function main() {
       })),
     task: async (input) => {
       let mathAnswer = await together.chat.completions.create({
-        model: 'FINETUNED_MODEL_ID',
+        model: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo', // Replace this with any serverless or finetuned model
         messages: [
           {
             role: 'system',
@@ -33,8 +33,8 @@ async function main() {
       return mathAnswer?.choices?.[0]?.message?.content ?? '';
     },
     scores: [Factuality],
-    experimentName: 'Llama 3 8B new',
-    maxConcurrency: 3,
+    experimentName: 'Llama 3.1 405B',
+    maxConcurrency: 4,
   });
 }
 
