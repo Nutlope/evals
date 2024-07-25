@@ -1,0 +1,21 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.28.2"
+  },
+  "dependencies": {
+    "autoevals": "^0.0.81",
+    "braintrust": "^0.0.146",
+    "together-ai": "^0.6.0-alpha.3"
+  }
+}
