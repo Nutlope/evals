@@ -1,12 +1,6 @@
-import { Eval } from 'braintrust';
-import { Factuality } from 'autoevals';
-import Together from 'together-ai';
-import OpenAI from 'openai';
+// This is the dataset we're using for our evals, 1k problems from MathInstruct
 
-const together = new Together();
-const openai = new OpenAI();
-
-const dataset = [
+export const dataset = [
   {
     source: 'data/CoT/aqua_rat.json',
     instruction:
@@ -6972,77 +6966,3 @@ const dataset = [
       'He took 4*9=36 strokes\nPar is 9*3=27 strokes\nSo he was 36-27=9 strokes over par\nThe answer is 9',
   },
 ];
-
-const EvalDataSet = dataset.map((row) => ({
-  input: row.instruction,
-  expected: row.output,
-}));
-
-const testData = EvalDataSet.slice(0, 2);
-
-const endpoints = [
-  {
-    model:
-      'hassan@together.ai/Meta-Llama-3.1-8B-Instruct-Reference-3.1-MathInstruct-261k-2024-07-23-22-06-02-bf3f37b7',
-    client: 'together',
-    name: 'Llama 3.1 8B Instruct',
-  },
-  {
-    model: 'gpt-4o',
-    client: 'openai',
-    name: 'OpenAI GPT-4o',
-  },
-  {
-    model:
-      'hassan@together.ai/Meta-Llama-3-8B-v3-MathInstruct-261k-base-2024-07-20-18-46-23-2214eacc',
-    client: 'Llama 3 8B Instruct',
-  },
-];
-
-async function main() {
-  await Promise.all(
-    endpoints.map(async (endpoint) => {
-      Eval('mathinstruct', {
-        data: () =>
-          EvalDataSet.map(({ input, expected }) => ({
-            input,
-            expected,
-          })),
-        task: async (input) => {
-          let mathAnswer;
-          if (endpoint.client === 'together') {
-            mathAnswer = await together.chat.completions.create({
-              model: endpoint.model,
-              messages: [
-                {
-                  role: 'system',
-                  content:
-                    "You're a helpful assistant that answers math problems.",
-                },
-                { role: 'user', content: input },
-              ],
-              max_tokens: 1500,
-            });
-          } else {
-            mathAnswer = await openai.chat.completions.create({
-              model: endpoint.model,
-              messages: [
-                {
-                  role: 'system',
-                  content:
-                    "You're a helpful assistant that answers math problems.",
-                },
-                { role: 'user', content: input },
-              ],
-            });
-          }
-          return mathAnswer?.choices?.[0]?.message?.content ?? '';
-        },
-        scores: [Factuality],
-        experimentName: endpoint.name,
-      });
-    })
-  );
-}
-
-main();
