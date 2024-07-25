@@ -16,6 +16,7 @@
   "dependencies": {
     "autoevals": "^0.0.81",
     "braintrust": "^0.0.146",
+    "openai": "^4.53.0",
     "together-ai": "^0.6.0-alpha.3"
   }
 }
